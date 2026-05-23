@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Hope Bridge</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="container-fluid main-content">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 px-0">
+            <div th:replace="fragments/sidebar :: sidebar"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <h2 class="fw-bold mb-4" style="color: #6A0DAD;">
+                <i class="fas fa-user-circle"></i> My Profile
+            </h2>
+
+            <div class="row">
+                <!-- Profile Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm text-center">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-user-circle fa-5x" style="color: #6A0DAD;"></i>
+                            </div>
+                            <h4 th:text="${user != null && user.fullName != null ? user.fullName : 'Guest'}">John Doe</h4>
+                            <p class="text-muted" th:text="${user.email}">john@example.com</p>
+                            <p class="text-muted" th:text="${user.phone != null ? user.phone : 'No phone added'}">+1 234 567 890</p>
+                            <hr>
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <h6 class="text-primary" th:text="${donor.impactScore}">0</h6>
+                                    <small>Impact Score</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Profile Form -->
+                <div class="col-md-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Edit Profile</h6>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/donor/profile/update}" method="post">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Username</label>
+                                        <input type="text" class="form-control" th:value="${user.username}" disabled>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" th:value="${user.email}" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" th:value="${user.fullName}" disabled>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phone</label>
+                                        <input type="text" class="form-control" th:value="${user.phone}" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Country</label>
+                                        <input type="text" class="form-control" name="country" th:value="${donor.country}" placeholder="Enter your country">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">City</label>
+                                        <input type="text" class="form-control" name="city" th:value="${donor.city}" placeholder="Enter your city">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Bio</label>
+                                    <textarea class="form-control" name="bio" rows="4" placeholder="Tell us about yourself...">[[${donor.bio}]]</textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Stats Card -->
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Donation Statistics</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <h4 class="text-primary" th:text="'₹' + ${#numbers.formatDecimal(donor.totalDonations, 0, 'COMMA', 2, 'POINT')}">₹0</h4>
+                                    <small>Total Donated</small>
+                                </div>
+                                <div class="col-4">
+                                    <h4 class="text-primary" th:text="${donor.impactScore}">0</h4>
+                                    <small>Impact Score</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

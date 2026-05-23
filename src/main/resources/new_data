@@ -1,0 +1,25 @@
+-- ===============================
+-- 1️⃣ INSERT ADMIN USER
+-- ===============================
+INSERT INTO users (username, email, password, role, created_at)
+VALUES (
+    'admin',
+    'admin@hopebridge.com',
+    '$2a$10$slYQmyNdGzin7olVN3p9Be7DlH.PKZbv5H8KfzmAGCaFT5xj2FN1u', -- password: admin123
+    'ADMIN',
+    NOW()
+)
+ON DUPLICATE KEY UPDATE username = username;
+
+-- ===============================
+-- 2️⃣ CREATE ORPHANAGE (ONLY ONE)
+-- ===============================
+INSERT INTO orphanage (admin_id, name, description, total_funds_received, required_funds)
+SELECT id,
+       'SunShine Orphanage',
+       'Helping children with education and care',
+       0,
+       100000
+FROM users
+WHERE username = 'admin'
+ON DUPLICATE KEY UPDATE name = name;

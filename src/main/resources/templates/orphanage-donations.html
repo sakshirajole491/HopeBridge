@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Management - Hope Bridge</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .dashboard-card {
+            transition: 0.3s ease;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(106,13,173,0.15);
+        }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="container-fluid main-content">
+    <div class="row">
+        <div class="col-lg-2 col-md-3 px-0">
+            <div th:replace="fragments/sidebar :: sidebar"></div>
+        </div>
+
+        <div class="col-lg-10 col-md-9">
+            <h1 class="fw-bold mb-4" style="color: #6A0DAD;">
+                <i class="fas fa-hand-holding-heart me-2"></i> Donation Management
+            </h1>
+
+            <!-- Stats -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card text-white dashboard-card" style="background: linear-gradient(135deg,#6A0DAD,#9B59B6);">
+                        <div class="card-body">
+                            <h6>Total Donations</h6>
+                            <h3 th:text="${#lists.size(donations)}">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card text-white dashboard-card" style="background: linear-gradient(135deg,#4ECDC4,#44A08D);">
+                        <div class="card-body">
+                            <h6>Total Amount</h6>
+                            <h3 th:text="'₹' + ${#numbers.formatDecimal(totalAmount,0,'COMMA',2,'POINT')}">₹0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card text-white dashboard-card" style="background: linear-gradient(135deg,#FF6B6B,#FF8E72);">
+                        <div class="card-body">
+                            <h6>General Donations</h6>
+                            <h3 th:text="${generalCount}">0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donation Table -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between">
+                    <h6 class="mb-0">Donation History</h6>
+                    <span class="badge bg-primary"
+                          th:text="${#lists.size(donations)} + ' entries'">0</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Donation ID</th>
+                            <th>Date</th>
+                            <th>Donor</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="donation : ${donations}">
+                            <td th:text="${donation.id}">1</td>
+
+                            <td th:text="${#temporals.format(donation.donationDate, 'MMM dd, yyyy')}">
+                                Apr 03, 2026
+                            </td>
+
+                            <td>
+                                <strong th:text="${donation.donor.user.fullName}">John Doe</strong><br>
+                                <small class="text-muted"
+                                       th:text="${donation.donor.user.email}">
+                                    john@email.com
+                                </small>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-success"
+                                      th:text="${donation.donationType}">
+                                    GENERAL_DONATION
+                                </span>
+                            </td>
+
+                            <td class="fw-bold" style="color: #6A0DAD;"
+                                th:text="'₹' + ${#numbers.formatDecimal(donation.amount,0,'COMMA',2,'POINT')}">
+                                ₹100
+                            </td>
+
+                            <td>
+                                <span class="badge bg-success"
+                                      th:text="${donation.status}">
+                                    Completed
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

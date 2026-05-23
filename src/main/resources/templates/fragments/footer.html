@@ -1,0 +1,39 @@
+<footer th:fragment="footer" style="background: linear-gradient(135deg, #4A0B7A, #1a1a2e); padding: 1.5rem 0; margin-top: 2rem; position: relative;">
+    <div class="container-fluid px-4">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <h5 style="font-size: 1.1rem; margin-bottom: 0.8rem;">
+                    <i class="fas fa-heart" style="color:#FF6B6B;"></i> Hope Bridge
+                </h5>
+                <p style="font-size: 0.85rem; margin-bottom: 0.3rem; opacity: 0.9;">Connecting donors with orphanages</p>
+                <p style="font-size: 0.85rem; opacity: 0.9;">Transforming lives through generosity.</p>
+            </div>
+
+            <div class="col-md-4">
+                <h5 style="font-size: 1.1rem; margin-bottom: 0.8rem;">Quick Links</h5>
+                <ul class="list-unstyled" style="font-size: 0.85rem;">
+                    <li class="mb-1"><a th:href="@{/}" class="text-white-50" style="text-decoration: none;"><i class="fas fa-chevron-right me-1" style="font-size: 0.7rem;"></i> Home</a></li>
+                    <li class="mb-1"><a th:href="@{/about}" class="text-white-50" style="text-decoration: none;"><i class="fas fa-chevron-right me-1" style="font-size: 0.7rem;"></i> About</a></li>
+                    <li class="mb-1"><a th:href="@{/contact}" class="text-white-50" style="text-decoration: none;"><i class="fas fa-chevron-right me-1" style="font-size: 0.7rem;"></i> Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4">
+                <h5 style="font-size: 1.1rem; margin-bottom: 0.8rem;">Contact</h5>
+                <p style="font-size: 0.85rem; margin-bottom: 0.3rem;"><i class="fas fa-envelope me-2" style="font-size: 0.8rem;"></i> info@hopebridge.org</p>
+                <p style="font-size: 0.85rem; margin-bottom: 0.3rem;"><i class="fas fa-phone me-2" style="font-size: 0.8rem;"></i> +1 (555) 123-4567</p>
+                <div class="mt-2">
+                    <a href="#" class="text-white-50 me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white-50 me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white-50"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <hr style="margin: 0.8rem 0; opacity: 0.2;">
+
+        <p class="text-center mb-0" style="font-size: 0.8rem; opacity: 0.8;">
+            <i class="far fa-copyright me-1" style="font-size: 0.7rem;"></i> 2025 Hope Bridge. All rights reserved.
+        </p>
+    </div>
+</footer>

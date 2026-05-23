@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard - Hope Bridge</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(106,13,173,0.15);
+        }
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(106,13,173,0.1);
+            color: #6A0DAD;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="container-fluid main-content">
+    <div class="row">
+        <!-- SIDEBAR -->
+        <div class="col-md-3 col-lg-2 p-0">
+            <div th:replace="fragments/sidebar :: sidebar"></div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="col-md-9 col-lg-10 p-4">
+            <!-- Welcome Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="fw-bold" style="color: #6A0DAD;">
+                    <i class="fas fa-hand-holding-heart me-2"></i>
+                    Welcome, <span th:text="${user != null ? user.fullName : user.username}">Donor</span>
+                </h1>
+                <span class="badge bg-light text-dark p-3">
+                    <i class="fas fa-calendar me-2" style="color: #6A0DAD;"></i>
+                    <span th:text="${#temporals.format(#temporals.createNow(), 'MMMM dd, yyyy')}">March 14, 2026</span>
+                </span>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card dashboard-card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="stat-icon me-3">
+                                    <i class="fas fa-rupee-sign fa-2x"></i>
+                                </div>
+                                <div>
+                                    <span class="text-muted small">Total Donations</span>
+                                    <h3 class="mb-0 fw-bold" style="color: #6A0DAD;"
+                                        th:text="'₹' + ${#numbers.formatDecimal(donor != null ? donor.totalDonations : 0, 0, 'COMMA', 2, 'POINT')}">
+                                        ₹0.00
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card dashboard-card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="stat-icon me-3">
+                                    <i class="fas fa-star fa-2x"></i>
+                                </div>
+                                <div>
+                                    <span class="text-muted small">Impact Score</span>
+                                    <h3 class="mb-0 fw-bold" style="color: #6A0DAD;"
+                                        th:text="${donor != null ? donor.impactScore : 0}">
+                                        0
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6 class="mb-3">Quick Actions</h6>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a th:href="@{/donor/donate}" class="btn btn-primary">
+                                    <i class="fas fa-gift me-2"></i>Make a Donation
+                                </a>
+                                <a th:href="@{/donor/profile}" class="btn btn-outline-warning">
+                                    <i class="fas fa-user me-2"></i>My Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Donations -->
+            <div class="row g-4">
+                <!-- Recent Donations -->
+                <div class="col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0"><i class="fas fa-history me-2" style="color: #6A0DAD;"></i>Recent Donations</h6>
+                            <a th:href="@{/donor/donation-history}" class="btn btn-sm btn-link" style="color: #6A0DAD;">View All</a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div th:if="${not #lists.isEmpty(donations)}" class="list-group list-group-flush">
+                                <div th:each="donation, iterStat : ${donations}" th:if="${iterStat.index < 5}" class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <small class="text-muted" th:text="${#temporals.format(donation.donationDate, 'MMM dd')}">Mar 14</small>
+                                            <span class="ms-2" th:text="${donation.orphanage != null ? donation.orphanage.name : 'General Donation'}">Orphanage</span>
+                                        </div>
+                                        <span class="fw-bold" style="color: #6A0DAD;"
+                                              th:text="'$' + ${#numbers.formatDecimal(donation.amount, 0, 'COMMA', 2, 'POINT')}">$100</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:if="${#lists.isEmpty(donations)}" class="text-center py-4">
+                                <i class="fas fa-history fa-3x text-muted mb-2"></i>
+                                <p class="text-muted mb-0">No donations yet</p>
+                                <a th:href="@{/donor/donate}" class="btn btn-sm btn-primary mt-2">Make First Donation</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impact Progress -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="fas fa-chart-line me-2" style="color: #6A0DAD;"></i>Your Impact Journey</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>Donation Milestone</span>
+                                            <span th:text="'₹' + ${#numbers.formatDecimal(donor != null ? donor.totalDonations : 0, 0, 'COMMA', 2, 'POINT')} + ' / ₹5000'">₹0 / ₹5000</span>
+                                        </div>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar" style="background: linear-gradient(90deg, #6A0DAD, #9B59B6); width: 0%;"
+                                                 th:style="'width: ' + (${donor != null ? (donor.totalDonations * 100 / 500) : 0}) + '%'"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="p-3 bg-light rounded">
+                                        <h3 class="mb-0" style="color: #6A0DAD;" th:text="${donor != null ? donor.impactScore : 0}">0</h3>
+                                        <small class="text-muted">Impact Score</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

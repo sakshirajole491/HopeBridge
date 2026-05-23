@@ -1,0 +1,92 @@
+<div th:fragment="sidebar" class="sidebar" style="width: 240px; background: white; border-right: 1px solid rgba(106,13,173,0.1); height: calc(100vh - 60px); position: sticky; top: 60px; overflow-y: auto;">
+    <div class="sidebar-header p-3" style="background: linear-gradient(135deg, #9B59B6, #6A0DAD);">
+        <h5 class="mb-0" style="font-size: 1rem; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-compass"></i> Navigation Menu
+        </h5>
+    </div>
+
+    <nav class="sidebar-nav" style="padding: 0.5rem 0;">
+        <!-- ADMIN MENU -->
+        <div sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/admin/dashboard}" class="nav-link">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/donors}" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Donors</span>
+            </a>
+            <a th:href="@{/admin/orphanages}" class="nav-link">
+                <i class="fas fa-building"></i>
+                <span>Orphanages</span>
+            </a>
+            <a th:href="@{/admin/reports}" class="nav-link">
+                <i class="fas fa-file-alt"></i>
+                <span>Reports</span>
+            </a>
+        </div>
+
+        <!-- DONOR MENU -->
+        <div sec:authorize="hasRole('DONOR')">
+            <a th:href="@{/donor/dashboard}" class="nav-link">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a th:href="@{/donor/donate}" class="nav-link">
+                <i class="fas fa-gift"></i>
+                <span>Donate</span>
+            </a>
+            <a th:href="@{/donor/profile}" class="nav-link">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </div>
+
+        <!-- ORPHANAGE MENU -->
+        <div sec:authorize="hasRole('ORPHANAGE')">
+            <a th:href="@{/orphanage/dashboard}" class="nav-link">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a th:href="@{/orphanage/donations}" class="nav-link">
+                <i class="fas fa-gift"></i>
+                <span>Donations</span>
+            </a>
+
+            <a th:href="@{/orphanage/donors}" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Donors</span>
+            </a>
+
+            <a th:href="@{/orphanage/reports}" class="nav-link">
+                <i class="fas fa-file-alt"></i>
+                <span>Reports</span>
+            </a>
+
+            <a th:href="@{/orphanage/profile}" class="nav-link">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Quick Stats Mini -->
+    <div class="sidebar-footer p-3 border-top" style="background: #f8f9fa;"
+         sec:authorize="hasRole('ORPHANAGE')">
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <small class="text-muted">Available Funds</small>
+            <small class="fw-bold text-primary"
+                   th:text="'₹' + ${orphanage != null ? #numbers.formatDecimal(orphanage.availableFunds,0,'COMMA',2,'POINT') : '0.00'}">
+                ₹0.00
+            </small>
+        </div>
+
+        <div class="progress" style="height: 4px;">
+            <div class="progress-bar"
+                 th:style="'width:' + ${orphanage != null ? orphanage.fundProgress : 0} + '%; background: linear-gradient(90deg, #6A0DAD, #9B59B6);'">
+            </div>
+        </div>
+    </div>
+</div>

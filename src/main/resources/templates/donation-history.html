@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation History - Hope Bridge</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .history-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .history-card:hover {
+            transform: translateX(5px);
+            border-left-color: #6A0DAD;
+            box-shadow: 0 5px 15px rgba(106,13,173,0.1);
+        }
+        .receipt-btn {
+            transition: all 0.3s ease;
+        }
+        .receipt-btn:hover {
+            transform: scale(1.1);
+            background-color: #6A0DAD;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="container-fluid main-content">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 px-0">
+            <div th:replace="fragments/sidebar :: sidebar"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="fw-bold" style="color: #6A0DAD;">
+                    <i class="fas fa-history me-2"></i> Donation History
+                </h1>
+                <a th:href="@{/donor/donate}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-2"></i> New Donation
+                </a>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card dashboard-card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="stat-icon me-3">
+                                    <i class="fas fa-gift fa-lg"></i>
+                                </div>
+                                <div>
+                                    <span class="text-muted small">Total Donations</span>
+                                    <h3 class="mb-0 fw-bold" style="color: #6A0DAD;"
+                                        th:text="${#lists.size(donations)}">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card dashboard-card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="stat-icon me-3">
+                                    <i class="fas fa-rupee-sign fa-lg"></i>
+                                </div>
+                                <div>
+                                    <span class="text-muted small">Total Amount</span>
+                                    <h3 class="mb-0 fw-bold" style="color: #6A0DAD;"
+                                        th:text="${'₹' + #aggregates.sum(donations.![amount])}">₹0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card dashboard-card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="stat-icon me-3">
+                                    <i class="fas fa-calendar-alt fa-lg"></i>
+                                </div>
+                                <div>
+                                    <span class="text-muted small">Last Donation</span>
+                                    <h6 class="mb-0 fw-bold" style="color: #6A0DAD;"
+                                        th:if="${donations != null and !donations.isEmpty()}"
+                                        th:text="${#temporals.format(donations[donations.size()-1].donationDate, 'MMM dd, yyyy')}">
+                                    </h6>
+                                    <h6 class="mb-0" th:unless="${donations != null and !donations.isEmpty()}">N/A</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Options -->
+            <div class="card shadow-sm filter-card mb-4">
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="Search orphanage">
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select">
+                                <option>All Time</option>
+                                <option>Last 7 Days</option>
+                                <option>Last 15 Days</option>
+                                <option>Last 30 Days</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-primary w-100">
+                                <i class="fas fa-search me-2"></i> Filter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Donations List -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Your Donations</h6>
+                    <span class="badge bg-primary" th:text="${#lists.size(donations)} + ' entries'">0 entries</span>
+                </div>
+                <div class="card-body p-0">
+                    <div th:if="${not #lists.isEmpty(donations)}" class="list-group list-group-flush">
+                        <div th:each="donation, iterStat : ${donations}" class="list-group-item history-card p-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-5">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <span class="badge bg-light text-dark p-3 rounded-circle">
+                                                <i class="fas fa-gift" style="color: #6A0DAD;"></i>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1" th:text="${donation.orphanage.name}">Orphanage Name</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar-alt me-1"></i>
+                                                <span th:text="${#temporals.format(donation.donationDate, 'MMM dd, yyyy HH:mm')}">Jan 01, 2024</span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <span th:if="${donation.donationType == 'GENERAL_DONATION'}" class="badge bg-success px-3 py-2">General</span>
+                                </div>
+                                <div class="col-md-2">
+                                    <h5 class="mb-0 fw-bold" style="color: #6A0DAD;" th:text="${'₹' + #numbers.formatDecimal(donation.amount, 0, 'COMMA', 2, 'POINT')}">₹100</h5>
+                                </div>
+                                <div class="col-md-2">
+
+                                    <!-- View Receipt -->
+                                    <a th:href="@{/donor/receipt/{id}(id=${donation.id})}"
+                                       class="btn btn-sm receipt-btn"
+                                       style="border: 1px solid #6A0DAD; color: #6A0DAD;">
+
+                                        <i class="fas fa-receipt"></i>
+                                        Receipt
+                                    </a>
+
+                                </div>
+                            </div>
+                            <div th:if="${donation.description != null and !donation.description.isEmpty()}" class="row mt-2">
+                                <div class="col-12">
+                                    <small class="text-muted">
+                                        <i class="fas fa-comment me-1"></i> <span th:text="${donation.description}">Note</span>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div th:if="${#lists.isEmpty(donations)}" class="text-center py-5">
+                        <div class="mb-3">
+                            <i class="fas fa-history fa-4x text-muted"></i>
+                        </div>
+                        <h5>No Donation History</h5>
+                        <p class="text-muted mb-3">You haven't made any donations yet. Start making a difference today!</p>
+                        <a th:href="@{/donor/donate}" class="btn btn-primary">
+                            <i class="fas fa-gift me-2"></i>Make Your First Donation
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div th:if="${not #lists.isEmpty(donations)}" class="card-footer bg-light">
+                    <nav>
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">Previous</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
