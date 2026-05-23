@@ -10,4 +10,4 @@ RUN ./mvnw clean package -DskipTests
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "target/HopeBridge-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "target/ngo-management-system-1.0.0.jar"]
