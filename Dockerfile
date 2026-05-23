@@ -4,10 +4,10 @@ WORKDIR /app
 
 COPY . .
 
-RUN chmod +x mvnw
+RUN apt-get update && apt-get install -y maven
 
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "target/ngo-management-system-1.0.0.jar"]
+CMD ["sh", "-c", "java -jar target/*.jar"]
