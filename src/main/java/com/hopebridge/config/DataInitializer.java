@@ -12,7 +12,7 @@ public class DataInitializer {
 
     private final UserService userService;
 
-    @Bean
+    //@Bean
     CommandLineRunner initUsers() {
         return args -> {
 
